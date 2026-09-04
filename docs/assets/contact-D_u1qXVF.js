@@ -1,0 +1,1 @@
+import{i as s}from"./layout-DY9Ki0oV.js";document.addEventListener("DOMContentLoaded",()=>{s("contact");const t=document.getElementById("contact-form"),e=document.getElementById("contact-success");t==null||t.addEventListener("submit",n=>{n.preventDefault(),t.classList.add("hidden"),e.classList.remove("hidden")})});

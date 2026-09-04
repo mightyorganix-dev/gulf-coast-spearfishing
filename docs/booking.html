@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Spearfishing Charter | Gulf Coast Spearfishing</title>
+  <script type="module" crossorigin src="./assets/booking-BT2Zc2Sv.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/layout-DY9Ki0oV.js">
+  <link rel="modulepreload" crossorigin href="./assets/store-Br4tOU-W.js">
+  <link rel="stylesheet" crossorigin href="./assets/layout-CGwyW6de.css">
+</head>
+<body>
+  <div id="site-nav"></div>
+  <main class="page" data-caustics>
+    <div class="container-narrow">
+      <h1 style="color:var(--cream);font-size:2.2rem;margin-bottom:0.25rem">Reserve a premier charter</h1>
+      <p>Selective trips for certified divers. Five steps: itinerary, captain &amp; date, gear, credentials &amp; waiver, and deposit checkout.</p>
+
+      <div class="progress">
+        <div id="step-indicator-1" class="step-pill is-active"><span class="num">1</span> Trip</div>
+        <div id="step-indicator-2" class="step-pill"><span class="num">2</span> Captain &amp; Date</div>
+        <div id="step-indicator-3" class="step-pill"><span class="num">3</span> Gear</div>
+        <div id="step-indicator-4" class="step-pill"><span class="num">4</span> Cert &amp; Waiver</div>
+        <div id="step-indicator-5" class="step-pill"><span class="num">5</span> Deposit</div>
+      </div>
+
+      <form id="booking-form" onsubmit="return false;">
+        <section id="step-1" class="space-y">
+          <h2 style="color:var(--cream)">Choose your itinerary</h2>
+          <p>Each trip is purpose-built—ice, fish box, and safety gear included. Credentials required.</p>
+          <div id="trip-types-container" class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))"></div>
+          <div class="row-between" style="margin-top:1.5rem">
+            <span></span>
+            <button type="button" class="btn btn-primary" onclick="goToStep(2)">Continue to Captain &amp; Date →</button>
+          </div>
+        </section>
+
+        <section id="step-2" class="hidden">
+          <h2 style="color:var(--cream)">Captain, vessel &amp; date</h2>
+          <p>Match with your preferred USCG-licensed captain.</p>
+          <div id="captains-container" class="card-grid" style="margin-bottom:1rem"></div>
+          <div class="card grid-2">
+            <div class="field">
+              <label for="trip-date">Charter date</label>
+              <input type="date" id="trip-date" required />
+            </div>
+            <div class="field">
+              <label for="start-time">Departure time</label>
+              <select id="start-time">
+                <option value="06:00 AM">06:00 AM (Recommended morning tide)</option>
+                <option value="07:00 AM">07:00 AM</option>
+                <option value="12:00 PM">12:00 PM (Afternoon charter)</option>
+              </select>
+            </div>
+          </div>
+          <div class="row-between" style="margin-top:1.5rem">
+            <button type="button" class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(3)">Continue to Gear →</button>
+          </div>
+        </section>
+
+        <section id="step-3" class="hidden">
+          <h2 style="color:var(--cream)">Passengers &amp; gear</h2>
+          <p>USCG 6-pack licensing — maximum 6 divers.</p>
+          <div class="card" style="margin-bottom:1rem">
+            <label class="muted" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:750">Number of divers</label>
+            <div class="qty" style="margin-top:0.5rem">
+              <button type="button" onclick="adjustPassengers(-1)">−</button>
+              <span id="passenger-count-display" style="font-size:1.5rem;font-weight:850;width:2.5rem;text-align:center;color:var(--cream)">4</span>
+              <button type="button" onclick="adjustPassengers(1)">+</button>
+              <span class="muted" style="font-size:0.8rem;margin-left:0.5rem">Max 6</span>
+            </div>
+          </div>
+          <h3 style="color:var(--sand-300);font-family:var(--font);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase">Gear rental &amp; add-ons</h3>
+          <div id="gear-container" class="card-grid" style="grid-template-columns:1fr 1fr"></div>
+          <div class="row-between" style="margin-top:1.5rem">
+            <button type="button" class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(4)">Continue to Cert &amp; Waiver →</button>
+          </div>
+        </section>
+
+        <section id="step-4" class="hidden">
+          <h2 style="color:var(--cream)">Lead diver, cert &amp; waiver</h2>
+          <p>Liability release and dive agency credentials.</p>
+          <div class="card grid-3" style="margin-bottom:1rem">
+            <div class="field"><label for="cust-name">Full name</label><input id="cust-name" type="text" placeholder="John Doe" required /></div>
+            <div class="field"><label for="cust-email">Email</label><input id="cust-email" type="email" placeholder="john@example.com" required /></div>
+            <div class="field"><label for="cust-phone">Cell (dock SMS)</label><input id="cust-phone" type="tel" placeholder="(251) 555-0199" required /></div>
+          </div>
+          <div class="card grid-2" style="margin-bottom:1rem">
+            <div class="field">
+              <label for="cert-agency">Certifying agency</label>
+              <select id="cert-agency">
+                <option value="FII (Freediving Instructors Int.)">FII (Freediving Instructors Int.)</option>
+                <option value="PFI (Performance Freediving Int.)">PFI (Performance Freediving Int.)</option>
+                <option value="PADI Open Water / Advanced">PADI Open Water / Advanced</option>
+                <option value="SSI Freediving / SCUBA">SSI Freediving / SCUBA</option>
+                <option value="NAUI / Other">NAUI / Other</option>
+              </select>
+            </div>
+            <div class="field"><label for="cert-number">Cert / license number</label><input id="cert-number" type="text" placeholder="e.g. FII-772910" required /></div>
+          </div>
+          <div class="card">
+            <div class="row-between" style="margin-bottom:0.75rem">
+              <h3 style="color:var(--cream);margin:0;font-size:1.1rem">Electronic liability waiver</h3>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="clearSignature()">Clear</button>
+            </div>
+            <p style="font-size:0.85rem;background:rgba(0,0,0,0.25);padding:0.75rem;border-radius:10px">I acknowledge that freediving and spearfishing involve inherent marine risks. I confirm all members of my party hold required dive credentials and understand captain authority on weather cancellations.</p>
+            <div class="signature-wrap"><canvas id="signature-pad"></canvas></div>
+            <p class="muted" style="text-align:center;font-size:0.75rem;margin:0.5rem 0 0">Sign with mouse or touch.</p>
+          </div>
+          <div class="row-between" style="margin-top:1.5rem">
+            <button type="button" class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(5)">Proceed to Payment →</button>
+          </div>
+        </section>
+
+        <section id="step-5" class="hidden">
+          <h2 style="color:var(--cream)">Review &amp; confirm deposit</h2>
+          <p>30% deposit locks your date. Balance due 24h before dock time.</p>
+          <div class="card" style="margin-bottom:1rem">
+            <div class="row-between" style="border-bottom:1px solid var(--line);padding-bottom:1rem;margin-bottom:1rem">
+              <div>
+                <h3 id="summary-trip-title" style="color:var(--cream);margin:0">Trip</h3>
+                <p id="summary-trip-date" style="margin:0.25rem 0 0;color:var(--ocean-400);font-size:0.85rem">—</p>
+              </div>
+              <strong id="summary-base-price" style="font-size:1.4rem;color:var(--cream)">$0</strong>
+            </div>
+            <div id="summary-gear-list" style="font-size:0.85rem;margin-bottom:1rem"></div>
+            <div class="row-between muted" style="font-size:0.9rem"><span>Subtotal</span><span id="summary-subtotal">$0</span></div>
+            <div class="row-between muted" style="font-size:0.9rem"><span>Fuel &amp; marina tax</span><span>Included</span></div>
+            <div class="row-between" style="font-weight:800;color:var(--cream);margin-top:0.5rem;border-top:1px solid var(--line);padding-top:0.75rem"><span>Total charter cost</span><span id="summary-total" style="color:var(--ocean-400);font-size:1.25rem">$0</span></div>
+            <div class="deposit-line"><span>30% deposit due today</span><span id="summary-deposit">$0.00</span></div>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <h3 style="color:var(--cream);font-size:1.05rem;margin-bottom:0.35rem">Deposit payment</h3>
+            <p style="font-size:0.85rem;margin-bottom:1rem">Enter your card details to pay the 30% deposit and confirm your charter date.</p>
+            <div class="field" style="margin-bottom:0.75rem"><label for="card-name">Cardholder name</label><input id="card-name" type="text" placeholder="Name on card" autocomplete="off" /></div>
+            <div class="grid-3">
+              <div class="field" style="grid-column:span 2"><label for="card-number">Card number</label><input id="card-number" type="text" placeholder="•••• •••• •••• ••••" inputmode="numeric" autocomplete="off" /></div>
+              <div class="field"><label for="card-cvc">CVC</label><input id="card-cvc" type="text" placeholder="CVC" inputmode="numeric" autocomplete="off" /></div>
+            </div>
+          </div>
+          <div class="row-between">
+            <button type="button" class="btn btn-ghost" onclick="goToStep(4)">← Back</button>
+            <button type="button" class="btn btn-ok" onclick="submitBooking()">🔒 Pay Deposit &amp; Confirm</button>
+          </div>
+        </section>
+      </form>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+</body>
+</html>
