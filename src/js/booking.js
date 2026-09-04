@@ -1,5 +1,6 @@
 import store from './store.js';
 import { initLayout } from './layout.js';
+import { stripeConfig, isStripeCheckoutReady } from './stripe-config.js';
 
 let currentStep = 1;
 let selectedTripId = 'trip-2';
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
   document.getElementById('trip-date').value = tomorrow;
   document.getElementById('passenger-count-display').textContent = passengerCount;
+  renderDepositPanel();
 });
 
 function clearFieldErrors(scope) {
@@ -95,15 +97,7 @@ function validateStep(step) {
       goToStep(4);
       return false;
     }
-    const cardName = document.getElementById('card-name');
-    const cardNumber = document.getElementById('card-number');
-    const cardCvc = document.getElementById('card-cvc');
-    clearFieldErrors(document.getElementById('step-5'));
-    let ok = true;
-    if (!cardName.value.trim()) { showError(cardName, 'Cardholder name is required.'); ok = false; }
-    if (!cardNumber.value.trim()) { showError(cardNumber, 'Enter your card number.'); ok = false; }
-    if (!cardCvc.value.trim()) { showError(cardCvc, 'Enter your CVC.'); ok = false; }
-    return ok;
+    return true;
   }
   return true;
 }
@@ -116,7 +110,7 @@ window.goToStep = function goToStep(step) {
   currentStep = step;
   document.getElementById(`step-${currentStep}`).classList.remove('hidden');
   document.getElementById(`step-indicator-${currentStep}`).classList.add('is-active');
-  if (step === 5) updateSummary();
+  if (step === 5) { updateSummary(); renderDepositPanel(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
@@ -132,9 +126,23 @@ window.clearSignature = function clearSignature() {
   }
 };
 
-window.submitBooking = function submitBooking() {
-  if (!validateStep(5)) return;
+function renderDepositPanel() {
+  const ready = isStripeCheckoutReady();
+  const readyPanel = document.getElementById('stripe-ready-panel');
+  const soonPanel = document.getElementById('stripe-soon-panel');
+  const payBtn = document.getElementById('btn-stripe-pay');
+  const holdBtn = document.getElementById('btn-reserve-hold');
+  if (readyPanel) readyPanel.classList.toggle('hidden', !ready);
+  if (soonPanel) soonPanel.classList.toggle('hidden', ready);
+  if (payBtn) payBtn.classList.toggle('hidden', !ready);
+  if (holdBtn) {
+    holdBtn.textContent = ready ? 'Reserve hold instead' : 'Reserve hold';
+    holdBtn.classList.toggle('btn-ok', !ready);
+    holdBtn.classList.toggle('btn-ghost', ready);
+  }
+}
 
+function buildBookingDraft(paymentStatus, notes) {
   const name = document.getElementById('cust-name').value.trim();
   const email = document.getElementById('cust-email').value.trim();
   const phone = document.getElementById('cust-phone').value.trim();
@@ -158,13 +166,16 @@ window.submitBooking = function submitBooking() {
     selectedGearArr.push({ id: g.id, name: g.name, price: g.price, quantity: qty });
   });
 
-  const grandTotal = trip.basePrice + gearSubtotal;
-  const deposit = grandTotal * 0.3;
+  const grandTotal = (trip?.basePrice || 0) + gearSubtotal;
+  const depositPct = stripeConfig.depositPercent || 0.3;
+  const deposit = Math.round(grandTotal * depositPct * 100) / 100;
 
-  const newBooking = store.addBooking({
+  return {
     tripTypeId: selectedTripId,
+    tripTitle: trip?.title || '',
     boatId: captain ? captain.assignedBoatId : 'boat-1',
     captainId: selectedCaptainId,
+    captainName: captain?.name || '',
     customerName: name,
     customerEmail: email,
     customerPhone: phone,
@@ -173,18 +184,120 @@ window.submitBooking = function submitBooking() {
     passengerCount,
     gearAddons: selectedGearArr,
     totalAmount: grandTotal,
-    depositPaid: Math.round(deposit * 100) / 100,
-    paymentStatus: 'deposit_paid',
+    depositPaid: deposit,
+    paymentStatus,
     waiverSigned: true,
     diveCertVerified: true,
     certAgency,
     certNumber,
     weatherStatus: 'green',
-    notes: 'Online booking completed.'
-  });
+    notes,
+  };
+}
 
-  window.location.href = `itinerary.html?id=${encodeURIComponent(newBooking.id)}`;
+function setStripePayError(message) {
+  const el = document.getElementById('stripe-pay-error');
+  if (!el) return;
+  if (!message) {
+    el.textContent = '';
+    el.classList.add('hidden');
+    return;
+  }
+  el.textContent = message;
+  el.classList.remove('hidden');
+}
+
+window.submitReserveHold = function submitReserveHold() {
+  if (!validateStep(5)) return;
+  const draft = buildBookingDraft(
+    'hold_pending',
+    'Reserve hold (no card). Confirm deposit by phone before charter date.'
+  );
+  const newBooking = store.addBooking(draft);
+  window.location.href = `itinerary.html?id=${encodeURIComponent(newBooking.id)}&hold=1`;
 };
+
+window.payDepositWithStripe = async function payDepositWithStripe() {
+  if (!validateStep(5)) return;
+  if (!isStripeCheckoutReady()) {
+    setStripePayError('Online deposits are not configured yet.');
+    return;
+  }
+
+  const payBtn = document.getElementById('btn-stripe-pay');
+  setStripePayError('');
+  if (payBtn) {
+    payBtn.disabled = true;
+    payBtn.textContent = 'Connecting to Stripe…';
+  }
+
+  const draft = buildBookingDraft(
+    'awaiting_stripe',
+    'Awaiting Stripe Checkout deposit payment.'
+  );
+  const newBooking = store.addBooking(draft);
+
+  const payload = {
+    bookingId: newBooking.id,
+    tripTitle: draft.tripTitle,
+    tripTypeId: draft.tripTypeId,
+    captainId: draft.captainId,
+    captainName: draft.captainName,
+    customerName: draft.customerName,
+    customerEmail: draft.customerEmail,
+    customerPhone: draft.customerPhone,
+    tripDate: draft.tripDate,
+    startTime: draft.startTime,
+    passengerCount: draft.passengerCount,
+    totalAmount: draft.totalAmount,
+    depositAmount: draft.depositPaid,
+    siteOrigin: window.location.origin + window.location.pathname.replace(/[^/]*$/, ''),
+    successPath: 'itinerary.html',
+    cancelPath: 'booking.html',
+  };
+
+  // Normalize siteOrigin to directory containing the HTML pages
+  try {
+    const u = new URL(window.location.href);
+    payload.siteOrigin = `${u.origin}${u.pathname.replace(/booking\.html.?$/, '')}`.replace(/\/$/, '');
+  } catch {
+    /* keep prior */
+  }
+
+  try {
+    const res = await fetch(stripeConfig.checkoutEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.url) {
+      store.updateBooking(newBooking.id, {
+        paymentStatus: 'checkout_failed',
+        notes: data.error || 'Stripe checkout session failed.',
+      });
+      setStripePayError(data.error || 'Could not start Stripe Checkout. Try Reserve hold or call to book.');
+      if (payBtn) {
+        payBtn.disabled = false;
+        payBtn.textContent = 'Pay deposit with Stripe';
+      }
+      return;
+    }
+    window.location.href = data.url;
+  } catch (err) {
+    store.updateBooking(newBooking.id, {
+      paymentStatus: 'checkout_failed',
+      notes: String(err?.message || err),
+    });
+    setStripePayError('Network error reaching checkout. Use Reserve hold or try again later.');
+    if (payBtn) {
+      payBtn.disabled = false;
+      payBtn.textContent = 'Pay deposit with Stripe';
+    }
+  }
+};
+
+window.submitBooking = window.submitReserveHold;
 
 function renderTripTypes() {
   const trips = store.getTripTypes();
@@ -296,7 +409,7 @@ function updateSummary() {
   document.getElementById('summary-gear-list').innerHTML = gearHtml || '<div class="muted">No extra gear selected</div>';
 
   const grandTotal = (trip?.basePrice || 0) + gearSubtotal;
-  const deposit = grandTotal * 0.3;
+  const deposit = grandTotal * (stripeConfig.depositPercent || 0.3);
   document.getElementById('summary-subtotal').textContent = `$${grandTotal.toLocaleString()}`;
   document.getElementById('summary-total').textContent = `$${grandTotal.toLocaleString()}`;
   document.getElementById('summary-deposit').textContent = `$${deposit.toFixed(2)}`;

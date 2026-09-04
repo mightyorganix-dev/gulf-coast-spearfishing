@@ -32,7 +32,7 @@ const INITIAL_CAPTAINS = [
     experienceYears: 14,
     phone: '(251) 555-0192',
     assignedBoatId: 'boat-1',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200'
+    avatar: './images/captains/vance.jpg'
   },
   {
     id: 'cap-2',
@@ -42,7 +42,7 @@ const INITIAL_CAPTAINS = [
     experienceYears: 10,
     phone: '(251) 555-0144',
     assignedBoatId: 'boat-2',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200'
+    avatar: './images/captains/jennings.jpg'
   }
 ];
 
@@ -58,7 +58,7 @@ const INITIAL_TRIP_TYPES = [
     certMinLevel: 'Basic Freediving or Open Water SCUBA',
     locationType: 'Inshore Artificial Reefs (3-12 miles)',
     targetSpecies: ['Red Snapper (Seasonal)', 'Sheepshead', 'Triggerfish', 'Flounder', 'Spanish Mackerel'],
-    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&q=80&w=600',
+    image: './images/trips/trip-inshore.jpg',
     description: 'Leave the slip at first light for nearshore reefs and wrecks - gin-clear water on a good tide, selective shots, and the quiet ritual of a Gulf morning done right.'
   },
   {
@@ -72,7 +72,7 @@ const INITIAL_TRIP_TYPES = [
     certMinLevel: 'FII/PFI Level 1 Freediver or Advanced Open Water SCUBA',
     locationType: 'Federal Oil Platforms & Deep Wrecks (25-50 miles)',
     targetSpecies: ['Greater Amberjack', 'Cobia', 'Mahi Mahi', 'Yellowfin Tuna', 'Gag Grouper'],
-    image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&q=80&w=600',
+    image: './images/trips/trip-offshore.jpg',
     description: 'Steam to federal platforms where bluewater stacks against steel. Currents, depth, and trophy structure - the offshore day serious divers measure every other charter against.'
   },
   {
@@ -86,7 +86,7 @@ const INITIAL_TRIP_TYPES = [
     certMinLevel: 'Open Water SCUBA Certified',
     locationType: 'Artificial Reef Complexes',
     targetSpecies: ['Invasive Lionfish (No bag limits!)', 'Sheepshead'],
-    image: 'https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&q=80&w=600',
+    image: './images/trips/trip-lionfish.jpg',
     description: 'A day of purpose: equipped containment, spine-safe protocols, and the rare pride of leaving the reef healthier than you found it.'
   }
 ];
@@ -174,6 +174,20 @@ class CharterStore {
     if (!localStorage.getItem('gs_bookings')) {
       localStorage.setItem('gs_bookings', JSON.stringify(INITIAL_BOOKINGS));
     }
+    this.syncMediaPaths();
+  }
+
+  // Refresh seeded trip/captain photos without wiping bookings
+  syncMediaPaths() {
+    const seed = '4';
+    if (localStorage.getItem('gs_image_seed') === seed) return;
+    const tripImages = Object.fromEntries(INITIAL_TRIP_TYPES.map((t) => [t.id, t.image]));
+    const trips = this.getTripTypes().map((t) => (tripImages[t.id] ? { ...t, image: tripImages[t.id] } : t));
+    localStorage.setItem('gs_trips', JSON.stringify(trips));
+    const avatars = Object.fromEntries(INITIAL_CAPTAINS.map((c) => [c.id, c.avatar]));
+    const captains = this.getCaptains().map((c) => (avatars[c.id] ? { ...c, avatar: avatars[c.id] } : c));
+    localStorage.setItem('gs_captains', JSON.stringify(captains));
+    localStorage.setItem('gs_image_seed', seed);
   }
 
   getBoats() {

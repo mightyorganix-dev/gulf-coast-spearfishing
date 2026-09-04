@@ -129,18 +129,26 @@
             <div class="row-between" style="font-weight:800;color:var(--cream);margin-top:0.5rem;border-top:1px solid var(--line);padding-top:0.75rem"><span>Total charter cost</span><span id="summary-total" style="color:var(--ocean-400);font-size:1.25rem">$0</span></div>
             <div class="deposit-line"><span>30% deposit due today</span><span id="summary-deposit">$0.00</span></div>
           </div>
-          <div class="card" style="margin-bottom:1rem">
+          <div class="card" style="margin-bottom:1rem" id="deposit-payment-card">
             <h3 style="color:var(--cream);font-size:1.05rem;margin-bottom:0.35rem">Deposit payment</h3>
-            <p style="font-size:0.85rem;margin-bottom:1rem">Enter your card details to pay the 30% deposit and confirm your charter date.</p>
-            <div class="field" style="margin-bottom:0.75rem"><label for="card-name">Cardholder name</label><input id="card-name" type="text" placeholder="Name on card" autocomplete="off" /></div>
-            <div class="grid-3">
-              <div class="field" style="grid-column:span 2"><label for="card-number">Card number</label><input id="card-number" type="text" placeholder="•••• •••• •••• ••••" inputmode="numeric" autocomplete="off" /></div>
-              <div class="field"><label for="card-cvc">CVC</label><input id="card-cvc" type="text" placeholder="CVC" inputmode="numeric" autocomplete="off" /></div>
+            <div id="stripe-ready-panel" class="hidden">
+              <p style="font-size:0.85rem;margin-bottom:1rem">Pay your 30% deposit securely with Stripe Checkout. Card details never touch this site.</p>
+              <p id="stripe-pay-error" class="field-error hidden" style="margin-bottom:0.75rem" role="alert"></p>
+            </div>
+            <div id="stripe-soon-panel" class="hidden">
+              <div class="notice-banner" style="margin-bottom:1rem">
+                <strong style="color:var(--cream);display:block;margin-bottom:0.25rem">Online deposits opening soon — call to book</strong>
+                You can still place a non-card <em>Reserve hold</em> below. We will confirm by phone and collect the deposit before your charter date.
+              </div>
+              <p class="muted" style="font-size:0.82rem;margin:0">Prefer to talk now? Use the number on the Contact page.</p>
             </div>
           </div>
-          <div class="row-between">
+          <div class="row-between" style="gap:0.75rem;flex-wrap:wrap">
             <button type="button" class="btn btn-ghost" onclick="goToStep(4)">← Back</button>
-            <button type="button" class="btn btn-ok" onclick="submitBooking()">🔒 Pay Deposit &amp; Confirm</button>
+            <div style="display:flex;gap:0.65rem;flex-wrap:wrap;justify-content:flex-end">
+              <button type="button" class="btn btn-ghost" id="btn-reserve-hold" onclick="submitReserveHold()">Reserve hold</button>
+              <button type="button" class="btn btn-ok hidden" id="btn-stripe-pay" onclick="payDepositWithStripe()">Pay deposit with Stripe</button>
+            </div>
           </div>
         </section>
       </form>

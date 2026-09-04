@@ -22,7 +22,7 @@ index, booking, captain, admin, itinerary, about, faq, what-to-bring, red-snappe
 ## Functionality
 - Keys: gs_boats, gs_captains, gs_trips, gs_gear, gs_bookings
 - 5-step booking; validates name/email/phone/cert/signature
-- Simulated payment empty by default
+- Deposit Step 5: Stripe Checkout when configured; otherwise Reserve hold (localStorage)
 - Captain weather+SMS; admin stats; itinerary lookup
 
 ## Sensory hooks
@@ -31,4 +31,52 @@ index, booking, captain, admin, itinerary, about, faq, what-to-bring, red-snappe
 3. Logo ripple easter egg
 
 ## Known gaps
-- No real payment/email/SMS; static forecast; verify ADCNR/NOAA; localStorage per-browser
+- Payment: Stripe Checkout via serverless Worker (disabled by default); no email/SMS yet; static forecast; verify ADCNR/NOAA; localStorage per-browser
+
+## Stripe deposit checkout (static + serverless)
+
+GitHub Pages is static, so secret keys never ship in the browser. The client opens Stripe Checkout via a small serverless endpoint.
+
+### 1. Get Stripe keys (test mode first)
+
+1. Create an account at the Stripe Dashboard
+2. Developers → API keys
+3. Copy Publishable key pk_test_... and Secret key sk_test_...
+4. Never commit sk_test / sk_live — only put them in Worker/host env secrets
+
+### 2. Configure the client
+
+Edit src/js/stripe-config.js:
+
+- publishableKey: pk_test_... (placeholder until you have keys)
+- checkoutEndpoint: your deployed Worker or /api/create-checkout-session URL
+- enabled: true only after the endpoint is live
+
+If enabled is false or the endpoint is still a placeholder, Step 5 shows “Online deposits opening soon — call to book” and a Reserve hold button that still saves a localStorage booking.
+
+### 3. Deploy the checkout API (Cloudflare Worker)
+
+    cd worker
+    npx wrangler login
+    npx wrangler secret put STRIPE_SECRET_KEY
+    npx wrangler secret put SITE_ORIGIN
+    npx wrangler deploy
+
+worker/wrangler.toml names the Worker gulf-coast-checkout. After deploy, paste the Worker URL into stripe-config.js → checkoutEndpoint, set enabled: true, rebuild.
+
+Alternatives:
+
+- Cloudflare Pages: functions/api/create-checkout-session.js
+- Vercel/Node: api/create-checkout-session.js (wraps the Worker module; set STRIPE_SECRET_KEY + SITE_ORIGIN)
+
+### 4. Test
+
+1. Use Stripe test-mode keys only
+2. Build the site and open booking
+3. Step 5: use Pay deposit button, then a test card
+4. Success opens itinerary with id and session_id
+5. Cancel returns to booking.html
+
+### 5. Go live
+
+Switch to live keys, update Worker secrets, set publishableKey, rebuild, redeploy. See GO_LIVE.md.

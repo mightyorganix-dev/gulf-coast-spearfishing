@@ -3,9 +3,24 @@ import { initLayout } from './layout.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initLayout();
-  const id = new URLSearchParams(window.location.search).get('id') || 'GS-8921';
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || 'GS-8921';
+  const sessionId = params.get('session_id');
+  const isHold = params.get('hold') === '1';
+
+  if (sessionId && id) {
+    const booking = store.getBookingById(id);
+    if (booking && booking.paymentStatus !== 'deposit_paid') {
+      store.updateBooking(id, {
+        paymentStatus: 'deposit_paid',
+        stripeSessionId: sessionId,
+        notes: (booking.notes ? booking.notes + ' ' : '') + `Stripe session ${sessionId}.`,
+      });
+    }
+  }
+
   document.getElementById('lookup-input').value = id;
-  loadBookingItinerary(id);
+  loadBookingItinerary(id, { sessionId, isHold });
   document.getElementById('lookup-btn').addEventListener('click', () => {
     const val = document.getElementById('lookup-input').value.trim();
     if (val) loadBookingItinerary(val);
@@ -15,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function loadBookingItinerary(bookingId) {
+function loadBookingItinerary(bookingId, flags = {}) {
   const booking = store.getBookingById(bookingId);
   if (!booking) {
     document.getElementById('ticket-card').classList.add('hidden');
@@ -24,6 +39,30 @@ function loadBookingItinerary(bookingId) {
   }
   document.getElementById('not-found-card').classList.add('hidden');
   document.getElementById('ticket-card').classList.remove('hidden');
+
+  let banner = document.getElementById('payment-status-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'payment-status-banner';
+    banner.className = 'notice-banner';
+    banner.style.marginBottom = '1rem';
+    const ticket = document.getElementById('ticket-card');
+    ticket.parentElement.insertBefore(banner, ticket);
+  }
+  const refreshed = store.getBookingById(bookingId);
+  if (flags.sessionId) {
+    banner.classList.remove('hidden');
+    banner.innerHTML = '<strong style="color:var(--cream)">Deposit confirmed</strong> — thank you. Your charter date is locked; balance is due 24h before dock time.';
+  } else if (flags.isHold || refreshed?.paymentStatus === 'hold_pending') {
+    banner.classList.remove('hidden');
+    banner.innerHTML = '<strong style="color:var(--cream)">Reserve hold placed</strong> — online deposits open soon. We will call to confirm and collect the 30% deposit.';
+  } else if (refreshed?.paymentStatus === 'awaiting_stripe') {
+    banner.classList.remove('hidden');
+    banner.innerHTML = '<strong style="color:var(--cream)">Payment pending</strong> — finish Stripe Checkout to lock your deposit.';
+  } else {
+    banner.classList.add('hidden');
+    banner.innerHTML = '';
+  }
 
   const trip = store.getTripTypes().find(t => t.id === booking.tripTypeId);
   const cap = store.getCaptains().find(c => c.id === booking.captainId);
