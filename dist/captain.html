@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Captain Dock Portal | Gulf Coast Spearfishing</title>
+  <script type="module" crossorigin src="./assets/captain-Bb_kFfmu.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/layout-DY9Ki0oV.js">
+  <link rel="modulepreload" crossorigin href="./assets/store-Br4tOU-W.js">
+  <link rel="stylesheet" crossorigin href="./assets/layout-CGwyW6de.css">
+</head>
+<body>
+  <div id="site-nav"></div>
+  <header class="page-hero">
+    <div class="container">
+      <div class="row-between">
+        <div style="display:flex;gap:1rem;align-items:center">
+          <img id="cap-avatar" class="avatar" src="" alt="Captain" />
+          <div>
+            <div class="actions" style="margin-bottom:0.25rem">
+              <h1 id="cap-name" style="margin:0;font-size:1.6rem">Captain</h1>
+              <span id="cap-license" class="badge badge-ok">USCG</span>
+            </div>
+            <p id="cap-boat" style="margin:0;font-size:0.9rem">Vessel</p>
+          </div>
+        </div>
+        <div class="card" style="padding:0.85rem 1rem;font-size:0.82rem">
+          <strong style="color:var(--cream)">NOAA Station 42012</strong>
+          <div class="muted">Seas 2.1 ft @ 6s · Vis 45 ft · Wind 9 kts SSW</div>
+        </div>
+      </div>
+      <div class="row-between" style="margin-top:1.25rem">
+        <div class="field" style="min-width:220px">
+          <label for="captain-select">Switch captain</label>
+          <select id="captain-select"></select>
+        </div>
+        <a class="btn btn-ghost btn-sm" href="booking.html">+ New Booking</a>
+      </div>
+    </div>
+  </header>
+  <main class="page" style="padding-top:1.5rem">
+    <div class="container">
+      <div class="row-between" style="margin-bottom:1.25rem">
+        <div>
+          <h2 style="color:var(--cream);margin:0">Assigned charters</h2>
+          <p style="margin:0.25rem 0 0">Manifests, credentials, and weather status calls.</p>
+        </div>
+        <div class="muted">Scheduled: <strong id="total-charters-count" style="color:var(--cream)">0</strong></div>
+      </div>
+      <div id="manifest-container"></div>
+    </div>
+  </main>
+
+  <div id="sms-modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="row-between" style="margin-bottom:1rem">
+        <h3 style="color:var(--cream);margin:0">Dispatch SMS to charter lead</h3>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeSmsModal()">✕</button>
+      </div>
+      <div class="field" style="margin-bottom:0.75rem">
+        <label>Recipient</label>
+        <input id="sms-recipient" type="text" readonly />
+      </div>
+      <div class="field" style="margin-bottom:0.75rem">
+        <label>Message template</label>
+        <select id="sms-template" onchange="applySmsTemplate()">
+          <option value="dock">Dock arrival &amp; parking (Zeke's)</option>
+          <option value="weather_ok">Weather: ALL SYSTEMS GO</option>
+          <option value="weather_hold">Weather advisory: monitoring wind</option>
+          <option value="weather_cancel">Weather cancellation: reschedule</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:1rem">
+        <label>Message</label>
+        <textarea id="sms-body" rows="4"></textarea>
+      </div>
+      <div class="actions" style="justify-content:flex-end">
+        <button type="button" class="btn btn-ghost" onclick="closeSmsModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="sendSmsAlert()">Send SMS</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Trip Itinerary | Gulf Coast Spearfishing</title>
+  <link rel="stylesheet" href="/src/css/main.css" />
+</head>
+<body>
+  <div id="site-nav"></div>
+  <main class="page">
+    <div class="container-narrow">
+      <div class="row-between no-print" style="margin-bottom:1.25rem">
+        <div>
+          <h1 style="color:var(--cream);margin:0">Your day on the Gulf</h1>
+          <p style="margin:0.25rem 0 0">Boarding pass to a rare day - lookup by reference (e.g. GS-8921).</p>
+        </div>
+        <div class="actions">
+          <input id="lookup-input" type="text" placeholder="GS-8921" style="background:var(--navy-950);border:1px solid var(--navy-700);color:white;border-radius:12px;padding:0.55rem 0.75rem;text-transform:uppercase;width:8.5rem" />
+          <button id="lookup-btn" type="button" class="btn btn-primary btn-sm">Lookup</button>
+        </div>
+      </div>
+
+      <div id="not-found-card" class="empty-state hidden">
+        <strong>Booking ticket not found</strong>
+        <p>Check your reference number or book a new charter.</p>
+        <a class="btn btn-primary" href="booking.html">Book New Charter</a>
+      </div>
+
+      <div id="ticket-card" class="space-y">
+        <div class="pass-header">
+          <div class="row-between" style="border-bottom:1px solid var(--line);padding-bottom:1rem;margin-bottom:1rem">
+            <div>
+              <div class="actions" style="margin-bottom:0.5rem">
+                <span id="pass-ref-id" class="badge badge-info">REF #</span>
+                <span class="badge badge-ok">30% Deposit Paid</span>
+              </div>
+              <h2 id="pass-trip-title" style="color:var(--cream);margin:0;font-size:1.8rem">Trip</h2>
+              <p id="pass-trip-subtitle" style="margin:0.35rem 0 0">—</p>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm no-print" onclick="window.print()">Save this pass</button>
+          </div>
+          <div id="pass-weather-banner" class="weather-banner weather-green"></div>
+          <div class="grid-2" style="grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1rem">
+            <div><div class="muted" style="font-size:0.75rem">Charter date</div><strong id="pass-date" style="color:var(--cream)">—</strong></div>
+            <div><div class="muted" style="font-size:0.75rem">Dock arrival</div><strong id="pass-time" style="color:var(--ocean-400)">—</strong></div>
+            <div><div class="muted" style="font-size:0.75rem">Captain</div><strong id="pass-captain" style="color:var(--cream)">—</strong></div>
+            <div><div class="muted" style="font-size:0.75rem">Vessel</div><strong id="pass-vessel" style="color:var(--teal-400)">—</strong></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color:var(--cream);font-size:1.15rem">Docking location</h3>
+          <div class="row-between" style="background:rgba(0,0,0,0.2);padding:1rem;border-radius:14px">
+            <div>
+              <strong id="pass-marina-name" style="color:var(--cream)">Marina</strong>
+              <p id="pass-marina-address" style="margin:0.25rem 0;font-size:0.85rem">Address</p>
+              <p style="margin:0;font-size:0.8rem">Park in the charter lot and meet your captain at the slip 20 minutes early.</p>
+            </div>
+            <a id="pass-gps-link" class="btn btn-primary btn-sm" href="https://maps.google.com" target="_blank" rel="noopener">Open GPS</a>
+          </div>
+        </div>
+
+        <div class="check-grid">
+          <div class="card">
+            <h3 style="color:var(--cream);font-size:1.15rem">Ceremonial checklist</h3>
+            <ul class="check-list">
+              <li>Physical or digital dive cert card</li>
+              <li>Sunscreen, sunglasses &amp; rashguard</li>
+              <li>Cooler for fillets (leave in vehicle until return)</li>
+              <li>Snacks, water &amp; electrolytes</li>
+            </ul>
+            <a href="what-to-bring.html" style="font-size:0.85rem;font-weight:700">Full packing list →</a>
+          </div>
+          <div class="card">
+            <h3 style="color:var(--cream);font-size:1.15rem">Safety pass &amp; gear</h3>
+            <div class="row-between" style="background:rgba(0,0,0,0.2);padding:0.65rem 0.8rem;border-radius:10px;margin-bottom:0.5rem;font-size:0.85rem">
+              <span class="muted">Dive certification</span>
+              <span id="pass-cert-badge" style="color:var(--teal-400);font-weight:750">—</span>
+            </div>
+            <div class="row-between" style="background:rgba(0,0,0,0.2);padding:0.65rem 0.8rem;border-radius:10px;margin-bottom:0.5rem;font-size:0.85rem">
+              <span class="muted">Liability waiver</span>
+              <span id="pass-waiver-badge" class="badge badge-ok">—</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.2);padding:0.65rem 0.8rem;border-radius:10px;font-size:0.85rem">
+              <div class="muted" style="margin-bottom:0.35rem">Add-on gear</div>
+              <div id="pass-gear-addons">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script type="module" src="/src/js/itinerary.js"></script>
+</body>
+</html>

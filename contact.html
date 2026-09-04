@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact & Marinas | Gulf Coast Spearfishing</title>
+  <link rel="stylesheet" href="/src/css/main.css" />
+</head>
+<body data-page="contact">
+  <div id="site-nav"></div>
+  <header class="page-hero">
+    <div class="container-narrow">
+      <div class="eyebrow">Gulf Shores &amp; Orange Beach</div>
+      <h1>Contact the desk</h1>
+      <p>Questions about credentials, season timing, or which vessel fits your party—reach the charter that sets the Gulf Coast standard.</p>
+    </div>
+  </header>
+  <main class="page" style="padding-top:0">
+    <div class="container">
+      <div class="check-grid" style="margin-bottom:2rem">
+        <div>
+          <form id="contact-form" class="card">
+            <h3>Message</h3>
+            <div class="field" style="margin-bottom:0.75rem"><label for="c-name">Name</label><input id="c-name" required /></div>
+            <div class="field" style="margin-bottom:0.75rem"><label for="c-email">Email</label><input id="c-email" type="email" required /></div>
+            <div class="field" style="margin-bottom:0.75rem"><label for="c-phone">Phone</label><input id="c-phone" type="tel" placeholder="(251) 555-0100" /></div>
+            <div class="field" style="margin-bottom:1rem"><label for="c-msg">How can we help?</label><textarea id="c-msg" rows="4" required placeholder="Trip interest, dates, certification level…"></textarea></div>
+            <button type="submit" class="btn btn-primary">Send message</button>
+            <p class="muted" style="font-size:0.78rem;margin:0.75rem 0 0">We typically respond within one business day.</p>
+          </form>
+          <div id="contact-success" class="card empty-state hidden">
+            <strong>Message received</strong>
+            <p>Thank you. Our desk will respond within one business day.</p>
+            <a class="btn btn-primary" href="booking.html">Continue to booking</a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Marina meeting points</h3>
+          <div style="margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--line)">
+            <div class="card-kicker">SpearIt of the Gulf · Capt. Vance</div>
+            <strong style="color:var(--cream)">Zeke&rsquo;s Marina — Slip 14</strong>
+            <p style="margin:0.35rem 0">26619 Perdido Beach Blvd, Orange Beach, AL 36561</p>
+            <p style="margin:0 0 0.65rem;font-size:0.88rem">Desk: (251) 555-0192</p>
+            <a class="btn btn-ghost btn-sm" href="https://www.google.com/maps/search/?api=1&query=26619+Perdido+Beach+Blvd,+Orange+Beach,+AL+36561" target="_blank" rel="noopener">Open map</a>
+          </div>
+          <div>
+            <div class="card-kicker">Rig Hunter · Capt. Jennings</div>
+            <strong style="color:var(--cream)">Orange Beach Marina — Slip 08</strong>
+            <p style="margin:0.35rem 0">27075 Marina Rd, Orange Beach, AL 36561</p>
+            <p style="margin:0 0 0.65rem;font-size:0.88rem">Desk: (251) 555-0144</p>
+            <a class="btn btn-ghost btn-sm" href="https://www.google.com/maps/search/?api=1&query=27075+Marina+Rd,+Orange+Beach,+AL+36561" target="_blank" rel="noopener">Open map</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script type="module" src="/src/js/contact.js"></script>
+</body>
+</html>

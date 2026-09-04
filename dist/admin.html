@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fleet & Business Admin | Gulf Coast Spearfishing</title>
+  <script type="module" crossorigin src="./assets/admin-CeYs0quV.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/layout-DY9Ki0oV.js">
+  <link rel="modulepreload" crossorigin href="./assets/store-Br4tOU-W.js">
+  <link rel="stylesheet" crossorigin href="./assets/layout-CGwyW6de.css">
+</head>
+<body>
+  <div id="site-nav"></div>
+  <header class="page-hero">
+    <div class="container">
+      <h1>Business &amp; fleet admin</h1>
+      <p>Charter management dashboard — revenue, vessels, and master bookings.</p>
+      <div class="stat-grid" style="margin-top:1.5rem">
+        <div class="stat"><div class="label">Total charter revenue</div><div class="value" id="stat-revenue">$0</div></div>
+        <div class="stat"><div class="label">Deposits collected</div><div class="value" id="stat-deposits" style="color:var(--ok)">$0</div></div>
+        <div class="stat"><div class="label">Active vessels</div><div class="value" id="stat-boats" style="color:var(--ocean-400)">2</div></div>
+        <div class="stat"><div class="label">Red Snapper season</div><div class="value" style="font-size:1.1rem;color:var(--warn)">Peak surcharge</div></div>
+      </div>
+    </div>
+  </header>
+  <main class="page" style="padding-top:1.5rem">
+    <div class="container">
+      <section style="margin-bottom:2.5rem">
+        <h2 style="color:var(--cream)">Vessel fleet &amp; captain roster</h2>
+        <p>Assign captains, track USCG licenses and home marinas.</p>
+        <div id="admin-fleet-container" class="card-grid" style="grid-template-columns:1fr 1fr"></div>
+      </section>
+      <section>
+        <h2 style="color:var(--cream)">Master charter bookings</h2>
+        <p>Reservations, payment status, and dive waivers.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ref</th><th>Customer</th><th>Date &amp; time</th><th>Captain &amp; vessel</th>
+                <th>Party</th><th>Waiver &amp; cert</th><th>Financials</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="bookings-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+</body>
+</html>
